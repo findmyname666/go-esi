@@ -83,11 +83,13 @@ func (i *includeTag) Process(b []byte, req *http.Request) ([]byte, int) {
 	closeIdx := closeInclude.FindIndex(b)
 
 	if closeIdx == nil {
+		fmt.Println("[include] failed to find closing markup ... exiting")
 		return nil, len(b)
 	}
 
 	i.length = closeIdx[1]
 	if e := i.loadAttributes(b[8:i.length]); e != nil {
+		fmt.Printf("failed to load attributes: %s\n", e.Error())
 		return nil, len(b)
 	}
 
@@ -124,6 +126,10 @@ func (i *includeTag) Process(b []byte, req *http.Request) ([]byte, int) {
 
 	if response == nil {
 		fmt.Println("[include] response is empty")
+
+		if err != nil {
+			fmt.Printf("[include] err: %s\n", err.Error())
+		}
 
 		return nil, i.length
 	}
