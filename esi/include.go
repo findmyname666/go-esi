@@ -3,6 +3,7 @@ package esi
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -78,6 +79,7 @@ func addHeaders(headers []string, req *http.Request, rq *http.Request) {
 // With or without a space separator before the closing
 // With or without the quotes around the src/alt value.
 func (i *includeTag) Process(b []byte, req *http.Request) ([]byte, int) {
+	fmt.Println("processing include tag")
 	closeIdx := closeInclude.FindIndex(b)
 
 	if closeIdx == nil {
