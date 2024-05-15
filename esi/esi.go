@@ -1,6 +1,7 @@
 package esi
 
 import (
+	"fmt"
 	"net/http"
 )
 
@@ -109,6 +110,10 @@ func Parse(b []byte, req *http.Request) []byte {
 
 		res, p := t.Process(next[esiPointer:], req)
 		esiPointer += p
+
+		if res == nil {
+			fmt.Println("processed tag result is nil")
+		}
 
 		b = append(b[:pointer], append(next[:tagIdx[0]], append(res, next[esiPointer:]...)...)...)
 		pointer += len(res) + tagIdx[0]
