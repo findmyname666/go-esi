@@ -98,11 +98,15 @@ func (i *includeTag) Process(b []byte, req *http.Request) ([]byte, int) {
 		addHeaders(headersUnsafe, req, rq)
 	}
 
+	fmt.Println("[include] executing request")
+
 	client := &http.Client{}
 	response, err := client.Do(rq)
 	req = rq
 
 	if (err != nil || response.StatusCode >= 400) && i.alt != "" {
+		fmt.Println("[include] processing alt")
+
 		rq, _ = http.NewRequestWithContext(context.Background(), http.MethodGet, sanitizeURL(i.alt, req.URL), nil)
 		addHeaders(headersSafe, req, rq)
 
@@ -119,6 +123,8 @@ func (i *includeTag) Process(b []byte, req *http.Request) ([]byte, int) {
 	}
 
 	if response == nil {
+		fmt.Println("[include] response is empty")
+
 		return nil, i.length
 	}
 
@@ -126,6 +132,8 @@ func (i *includeTag) Process(b []byte, req *http.Request) ([]byte, int) {
 
 	defer response.Body.Close()
 	_, _ = io.Copy(&buf, response.Body)
+
+	fmt.Printf("[include] response: \n%s\n", buf.String())
 
 	b = Parse(buf.Bytes(), req)
 
