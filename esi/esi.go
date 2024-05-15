@@ -83,6 +83,7 @@ func ReadToTag(next []byte, pointer int) (startTagPosition, esiPointer int, t Ta
 }
 
 func Parse(b []byte, req *http.Request) []byte {
+	fmt.Println("starting ESI parsing")
 	pointer := 0
 
 	for pointer < len(b) {
